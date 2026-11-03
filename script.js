@@ -189,7 +189,7 @@
   /* ---------- Contact form (opens email app) ---------- */
   const form = $("#contactForm");
   const note = $("#formNote");
-  const MY_EMAIL = "you@example.com"; // <-- change to your email
+  const MY_EMAIL = "kaifmansuri986@gmail.com"; // <-- change to your email
 
   form.addEventListener("submit", (e) => {
     e.preventDefault();
