@@ -13,6 +13,15 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></symbol>
+    <symbol id="i-next" viewBox="0 0 24 24"><path d="M6 6l8.5 6L6 18zM16 6h2v12h-2z"/></symbol>
+    <symbol id="i-prev" viewBox="0 0 24 24"><path d="M18 6l-8.5 6 8.5 6zM6 6h2v12H6z"/></symbol>
+    <symbol id="i-shuffle" viewBox="0 0 24 24"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></symbol>
+    <symbol id="i-repeat" viewBox="0 0 24 24"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></symbol>
+    <symbol id="i-vol" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></symbol>
+  </svg>
 
   <!-- Preloader -->
   <div class="preloader" id="preloader">
@@ -35,10 +44,10 @@
     <a href="#home" class="nav__logo">Sid<span>.dev</span></a>
     <nav class="nav__links" id="navLinks">
       <a href="#home" class="active">Home</a>
+      <a href="#music">Music</a>
       <a href="#about">About</a>
       <a href="#skills">Skills</a>
       <a href="#projects">Works</a>
-      <a href="#music">Music</a>
       <a href="#contact">Contact</a>
     </nav>
     <button class="nav__burger" id="burger" aria-label="Toggle menu"><span></span><span></span><span></span></button>
@@ -138,10 +147,58 @@
       <a href="#about" class="scroll-hint" aria-label="Scroll down"><span></span></a>
     </section>
 
+    <!-- MUSIC -->
+    <section class="section" id="music">
+      <div class="container">
+        <h2 class="section__title reveal"><small>What I listen to</small>My Music Taste</h2>
+
+        <div class="music">
+          <div class="player glass reveal" id="player">
+            <div class="cover" id="cover"><b id="coverGlyph">A</b><small id="coverArtist"></small></div>
+            <div class="player__info">
+              <h3 id="nowTitle"></h3>
+              <p id="nowArtist"></p>
+              <div class="seek"><span id="tCur">0:00</span><input type="range" id="seek" min="0" max="1000" value="0" aria-label="Seek" /><span id="tDur">0:00</span></div>
+              <div class="ctrl">
+                <button class="tg" id="shuffleBtn" aria-label="Shuffle" aria-pressed="false"><svg class="ic"><use href="#i-shuffle"/></svg></button>
+                <button id="prevBtn" aria-label="Previous track"><svg class="ic"><use href="#i-prev"/></svg></button>
+                <button id="playBtn" class="play" aria-label="Play or pause"><svg class="ic i-play"><use href="#i-play"/></svg><svg class="ic i-pause"><use href="#i-pause"/></svg></button>
+                <button id="nextBtn" aria-label="Next track"><svg class="ic"><use href="#i-next"/></svg></button>
+                <button class="tg on" id="repeatBtn" aria-label="Repeat all" data-mode="all"><svg class="ic"><use href="#i-repeat"/></svg></button>
+              </div>
+              <div class="vol"><button id="muteBtn" aria-label="Mute"><svg class="ic"><use href="#i-vol"/></svg></button><input type="range" id="vol" min="0" max="100" value="100" aria-label="Volume" /></div>
+            </div>
+          </div>
+
+
+
+          <div class="music__side reveal">
+            <h4>Favorite Genres</h4>
+            <div class="tags tags--left">
+              <span>Lo-fi</span><span>J-Pop</span><span>Anime OST</span><span>Hip-Hop</span><span>Bollywood</span><span>Synthwave</span>
+            </div>
+
+            <h4>Top Tracks</h4>
+            <ul class="playlist" id="playlist">
+              <li class="active" data-title="Aadat" data-artist="Atif Aslam"><b>01</b><div><span>Aadat</span><em>Atif Aslam</em></div><i>♪</i></li>
+              <li data-title="Channa Mereya" data-artist="Arijit Singh"><b>02</b><div><span>Channa Mereya</span><em>Arijit Singh</em></div><i>♪</i></li>
+              <li data-title="Kuch Is Tarah" data-artist="Atif Aslam"><b>03</b><div><span>Kuch Is Tarah</span><em>Atif Aslam</em></div><i>♪</i></li>
+              <li data-title="Arz Kiya Hai" data-artist="Anuv Jain"><b>04</b><div><span>Arz Kiya Hai</span><em>Anuv Jain</em></div><i>♪</i></li>
+              <li data-title="Sahiba" data-artist="Aditya Rikhari"><b>05</b><div><span>Sahiba</span><em>Aditya Rikhari</em></div><i>♪</i></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Optional: paste your Spotify playlist embed below -->
+        <!-- <iframe class="spotify" src="https://open.spotify.com/embed/playlist/YOUR_ID" height="352" loading="lazy" allow="encrypted-media"></iframe> -->
+      </div>
+    </section>
+
+    
     <!-- ABOUT -->
     <section class="section" id="about">
       <div class="container">
-        <h2 class="section__title reveal"><small>01 · Who I am</small>About Me</h2>
+        <h2 class="section__title reveal"><small>Who I am</small>About Me</h2>
         <div class="about">
           <div class="about__card glass reveal">
             <div class="avatar">
@@ -149,7 +206,7 @@
             </div>
           </div>
           <div class="about__text reveal">
-            <p>Hi! I'm <strong>Sid</strong>, a passionate developer from Kannauj,U.P,India. I love turning ideas into smooth, animated and meaningful digital experiences.</p>
+            <p>Hi! I'm <strong>Sid</strong>, a passionate developer from India. I love turning ideas into smooth, animated and meaningful digital experiences.</p>
             <p>When I'm not coding, you'll find me exploring anime worlds, listening to music, and learning something new. Write a few lines here about your journey, your goals and what drives you.</p>
             <div class="stats">
               <div class="stat glass"><b data-count="3">0</b><span>Years Experience</span></div>
@@ -164,7 +221,7 @@
     <!-- SKILLS -->
     <section class="section" id="skills">
       <div class="container">
-        <h2 class="section__title reveal"><small>02 · What I do</small>My Skills</h2>
+        <h2 class="section__title reveal"><small>What I do</small>My Skills</h2>
         <div class="skills">
           <div class="skill glass reveal" data-level="90"><div class="skill__top"><span>HTML & CSS</span><em>90%</em></div><div class="skill__bar"><i></i></div></div>
           <div class="skill glass reveal" data-level="85"><div class="skill__top"><span>JavaScript</span><em>85%</em></div><div class="skill__bar"><i></i></div></div>
@@ -182,12 +239,13 @@
     <!-- PROJECTS -->
     <section class="section" id="projects">
       <div class="container">
-        <h2 class="section__title reveal"><small>03 · My projects</small>My Works</h2>
+        <h2 class="section__title reveal"><small>My projects</small>My Works</h2>
         <div class="filters reveal" id="filters">
           <button class="chip active" data-filter="all">All</button>
           <button class="chip" data-filter="web">Websites</button>
           <button class="chip" data-filter="app">Apps</button>
           <button class="chip" data-filter="tr">Trinetra Base-One</button>
+          <button class="chip" data-filter="design">Design</button>
         </div>
 
         
@@ -257,49 +315,10 @@
       </div>
     </section>
 
-    <!-- MUSIC -->
-    <section class="section" id="music">
-      <div class="container">
-        <h2 class="section__title reveal"><small>04 · What I listen to</small>My Music Taste</h2>
-
-        <div class="music">
-          <div class="player glass reveal">
-            <div class="player__disc" id="disc"><span>♪</span></div>
-            <div class="player__info">
-              <small>Currently vibing to</small>
-              <h3 id="nowTitle"></h3>
-              <p id="nowArtist"></p>
-              <div class="eq" id="eq"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-              <button class="btn btn--primary btn--sm" id="playBtn">▶ Play Vibe</button>
-            </div>
-          </div>
-
-          <div class="music__side reveal">
-            <h4>Favorite Genres</h4>
-            <div class="tags tags--left">
-              <span>Lo-fi</span><span>J-Pop</span><span>Anime OST</span><span>Hip-Hop</span><span>Bollywood</span><span>Synthwave</span>
-            </div>
-
-            <h4>Top Tracks</h4>
-            <ul class="playlist" id="playlist">
-              <li class="active" data-title="Aadat" data-artist="Atif Aslam"><b>01</b><div><span>Aadat</span><em>Atif Aslam</em></div><i>♪</i></li>
-              <li data-title="Channa Mereya" data-artist="Arijit Singh"><b>02</b><div><span>Channa Mereya</span><em>Arijit Singh</em></div><i>♪</i></li>
-              <li data-title="Kuch Is Tarah" data-artist="Atif Aslam"><b>03</b><div><span>Kuch Is Tarah</span><em>Atif Aslam</em></div><i>♪</i></li>
-              <li data-title="Arz Kiya Hai" data-artist="Anuv Jain"><b>04</b><div><span>Arz Kiya Hai</span><em>Anuv Jain</em></div><i>♪</i></li>
-              <li data-title="Sahiba" data-artist="Aditya Rikhari"><b>05</b><div><span>Sahiba</span><em>Aditya Rikhari</em></div><i>♪</i></li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Optional: paste your Spotify playlist embed below -->
-        <!-- <iframe class="spotify" src="https://open.spotify.com/embed/playlist/YOUR_ID" height="352" loading="lazy" allow="encrypted-media"></iframe> -->
-      </div>
-    </section>
-
     <!-- CONTACT -->
     <section class="section" id="contact">
       <div class="container">
-        <h2 class="section__title reveal"><small>05 · Say hello</small>Get In Touch</h2>
+        <h2 class="section__title reveal"><small>Say hello</small>Get In Touch</h2>
         <div class="contact">
           <div class="contact__info reveal">
             <p>Have a project in mind or just want to say hi? My inbox is always open.</p>
@@ -325,6 +344,15 @@
   <footer class="footer">
     <p>© <span id="year"></span> Sid · Crafted with 🌸 and 🐉</p>
   </footer>
+
+  <div class="mini" id="mini">
+    <div class="mini__cover" id="miniCover"></div>
+    <div class="mini__txt" id="miniInfo"><b id="miniTitle"></b><span id="miniArtist"></span></div>
+    <button id="miniPrev" aria-label="Previous track"><svg class="ic"><use href="#i-prev"/></svg></button>
+    <button id="miniPlay" aria-label="Play or pause"><svg class="ic i-play"><use href="#i-play"/></svg><svg class="ic i-pause"><use href="#i-pause"/></svg></button>
+    <button id="miniNext" aria-label="Next track"><svg class="ic"><use href="#i-next"/></svg></button>
+    <i class="mini__bar" id="miniBar"></i>
+  </div>
 
   <button class="to-top" id="toTop" aria-label="Back to top">↑</button>
 

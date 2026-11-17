@@ -73,6 +73,7 @@
       if (!e.isIntersecting) return;
       const el = e.target;
       el.classList.add("show");
+      setTimeout(() => { el.style.transitionDelay = ""; }, 1300);
 
       if (el.classList.contains("skill")) {
         $("i", el).style.width = el.dataset.level + "%";
@@ -130,9 +131,33 @@
     card.addEventListener("mouseleave", () => { card.style.transform = ""; });
   });
 
-  /* ---------- Project filter ---------- */
+  /* ---------- Project filter + swipe dots ---------- */
   const chips = $$(".chip");
   const projects = $$(".project");
+  const track = $("#projects-grid");
+  const dots = document.createElement("div");
+  dots.className = "dots";
+  track.after(dots);
+  const visible = () => projects.filter(p => !p.classList.contains("hide"));
+
+  function markDot() {
+    const mid = track.scrollLeft + track.clientWidth / 2;
+    let best = 0, bd = 1e9;
+    visible().forEach((p, i) => {
+      const d = Math.abs(p.offsetLeft + p.offsetWidth / 2 - mid);
+      if (d < bd) { bd = d; best = i; }
+    });
+    [...dots.children].forEach((d, i) => d.classList.toggle("on", i === best));
+  }
+  function buildDots() {
+    const vis = visible();
+    dots.innerHTML = vis.map(() => "<i></i>").join("");
+    [...dots.children].forEach((d, i) => d.addEventListener("click", () =>
+      vis[i].scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" })));
+    markDot();
+  }
+  track.addEventListener("scroll", markDot, { passive: true });
+
   chips.forEach((chip) => {
     chip.addEventListener("click", () => {
       chips.forEach(c => c.classList.remove("active"));
@@ -140,51 +165,116 @@
       const f = chip.dataset.filter;
       projects.forEach((p) => {
         const match = f === "all" || p.dataset.cat === f;
-        if (match) {
-          p.classList.remove("hide");
-          p.style.opacity = 0;
-          requestAnimationFrame(() => requestAnimationFrame(() => { p.style.opacity = 1; }));
-        } else {
-          p.classList.add("hide");
-        }
+        p.classList.toggle("hide", !match);
+        if (match) { p.classList.add("show"); p.style.opacity = 0; requestAnimationFrame(() => requestAnimationFrame(() => { p.style.opacity = 1; })); }
       });
+      track.scrollLeft = 0;
+      buildDots();
     });
   });
+  buildDots();
 
-  /* ---------- Music player (visual) ---------- */
-  const player = $(".player");
-  const playBtn = $("#playBtn");
-  const nowTitle = $("#nowTitle");
-  const nowArtist = $("#nowArtist");
-  const items = $$("#playlist li");
-
-  /*
-    Want real audio? Add file paths here (e.g. "music/song1.mp3"), one per playlist item.
-    Leave as "" to keep it a purely visual "vibe" player.
-  */
+  /* ---------- Music player (Spotify / Apple Music style) ---------- */
+  const player = $("#player"), seek = $("#seek"), cover = $("#cover"), mini = $("#mini");
+  const nowTitle = $("#nowTitle"), nowArtist = $("#nowArtist"), tCur = $("#tCur"), tDur = $("#tDur");
+  const items = $$("#playlist li"), list = $("#playlist");
   const audioFiles = ["https://audio.jukehost.co.uk/01a1973c-fc8f-7231-9a12-8647d104f235", "https://audio.jukehost.co.uk/01a1973c-fcf6-725b-b44f-45668e567d1c", "https://audio.jukehost.co.uk/01a1973c-fb40-71bb-b927-e06459c69962", "https://audio.jukehost.co.uk/01a1975c-2090-73bb-9e7b-9d991b1069e2", "https://audio.jukehost.co.uk/01a1975c-36e7-737f-996b-20e8efe2906d"];
+  const art = [["#ff5c9d", "#6a3df0"], ["#3b5bdb", "#4fe3a1"], ["#ff8fb8", "#e0a040"], ["#2fae7d", "#1b2a7a"], ["#7aa2ff", "#ff5c9d"]];
   const audio = new Audio();
-  audio.loop = true;
-  let playing = false;
+  audio.preload = "metadata";
+  let cur = 0, playing = false, dragging = false, inView = true, started = false, shuffle = false, repeat = "all";
+  const fmt = s => isFinite(s) ? Math.floor(s / 60) + ":" + String(Math.floor(s % 60)).padStart(2, "0") : "0:00";
+  const paint = p => seek.style.setProperty("--p", p * 100 + "%");
 
-  function setTrack(i) {
-    items.forEach(li => li.classList.remove("active"));
-    items[i].classList.add("active");
-    nowTitle.textContent = items[i].dataset.title;
-    nowArtist.textContent = items[i].dataset.artist;
-    if (audioFiles[i]) { audio.src = audioFiles[i]; if (playing) audio.play(); }
+  items.forEach((li, i) => {
+    li.querySelector("i").innerHTML = "<s></s><s></s><s></s>";
+    li.tabIndex = 0;
+    li.addEventListener("click", () => (i === cur ? toggle() : setTrack(i, true)));
+    li.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); li.click(); } });
+  });
+
+  const syncMini = () => mini.classList.toggle("show", started && !inView);
+  function setState(s) {
+    playing = s;
+    if (s) started = true;
+    player.classList.toggle("playing", s);
+    list.classList.toggle("on", s);
+    document.body.classList.toggle("is-playing", s);
+    syncMini();
   }
+  function play() { audio.play().then(() => setState(true)).catch(() => setState(false)); }
+  function pause() { audio.pause(); setState(false); }
+  function toggle() { playing ? pause() : play(); }
 
-  function setPlaying(state) {
-    playing = state;
-    player.classList.toggle("playing", state);
-    playBtn.textContent = state ? "❚❚ Pause Vibe" : "▶ Play Vibe";
-    const idx = items.findIndex(li => li.classList.contains("active"));
-    if (audioFiles[idx]) { state ? audio.play() : audio.pause(); }
+  function setTrack(i, autoplay = playing) {
+    cur = (i + items.length) % items.length;
+    const li = items[cur], [c1, c2] = art[cur % art.length];
+    items.forEach((x, k) => x.classList.toggle("active", k === cur));
+    nowTitle.textContent = $("#miniTitle").textContent = li.dataset.title;
+    nowArtist.textContent = $("#miniArtist").textContent = $("#coverArtist").textContent = li.dataset.artist;
+    $("#coverGlyph").textContent = li.dataset.title.charAt(0);
+    [player, mini].forEach(el => { el.style.setProperty("--accent", c1); el.style.setProperty("--c1", c1); el.style.setProperty("--c2", c2); });
+    audio.src = audioFiles[cur];
+    seek.value = 0; paint(0); tCur.textContent = "0:00"; tDur.textContent = "0:00";
+    if ("mediaSession" in navigator) navigator.mediaSession.metadata = new MediaMetadata({ title: li.dataset.title, artist: li.dataset.artist });
+    if (autoplay) play();
   }
+  function next() {
+    let n = cur + 1;
+    if (shuffle && items.length > 1) { do { n = Math.floor(Math.random() * items.length); } while (n === cur); }
+    setTrack(n);
+  }
+  const prev = () => (audio.currentTime > 4 ? (audio.currentTime = 0) : setTrack(cur - 1));
 
-  playBtn.addEventListener("click", () => setPlaying(!playing));
-  items.forEach((li, i) => li.addEventListener("click", () => { setTrack(i); setPlaying(true); }));
+  ["playBtn", "miniPlay"].forEach(id => $("#" + id).addEventListener("click", toggle));
+  ["nextBtn", "miniNext"].forEach(id => $("#" + id).addEventListener("click", next));
+  ["prevBtn", "miniPrev"].forEach(id => $("#" + id).addEventListener("click", prev));
+  cover.addEventListener("click", toggle);
+  $("#miniInfo").addEventListener("click", () => $("#music").scrollIntoView({ behavior: "smooth" }));
+
+  $("#shuffleBtn").addEventListener("click", e => {
+    shuffle = !shuffle;
+    e.currentTarget.classList.toggle("on", shuffle);
+    e.currentTarget.setAttribute("aria-pressed", shuffle);
+  });
+  $("#repeatBtn").addEventListener("click", e => {
+    const modes = ["all", "one", "off"], b = e.currentTarget;
+    repeat = modes[(modes.indexOf(repeat) + 1) % 3];
+    b.dataset.mode = repeat;
+    b.classList.toggle("on", repeat !== "off");
+    b.setAttribute("aria-label", "Repeat " + repeat);
+  });
+
+  const vol = $("#vol");
+  vol.addEventListener("input", () => { audio.volume = vol.value / 100; audio.muted = false; vol.style.setProperty("--p", vol.value + "%"); $("#muteBtn").classList.remove("off"); });
+  $("#muteBtn").addEventListener("click", e => { audio.muted = !audio.muted; e.currentTarget.classList.toggle("off", audio.muted); });
+  vol.style.setProperty("--p", "100%");
+
+  audio.addEventListener("loadedmetadata", () => { tDur.textContent = fmt(audio.duration); });
+  audio.addEventListener("ended", () => {
+    if (repeat === "one") { audio.currentTime = 0; play(); }
+    else if (repeat === "off" && !shuffle && cur === items.length - 1) { setTrack(0, false); pause(); }
+    else if (shuffle) next();
+    else setTrack(cur + 1, true);
+  });
+  seek.addEventListener("input", () => { dragging = true; paint(seek.value / 1000); if (audio.duration) tCur.textContent = fmt(seek.value / 1000 * audio.duration); });
+  seek.addEventListener("change", () => { if (audio.duration) audio.currentTime = seek.value / 1000 * audio.duration; dragging = false; });
+  if ("mediaSession" in navigator) {
+    const ms = navigator.mediaSession;
+    ms.setActionHandler("play", play); ms.setActionHandler("pause", pause);
+    ms.setActionHandler("previoustrack", prev); ms.setActionHandler("nexttrack", next);
+  }
+  new IntersectionObserver(([e]) => { inView = e.isIntersecting; syncMini(); }, { threshold: 0.1 }).observe(player);
+
+  (function tick() {
+    if (playing && audio.duration) {
+      const p = audio.currentTime / audio.duration;
+      $("#miniBar").style.transform = `scaleX(${p})`;
+      if (!dragging) { seek.value = p * 1000; paint(p); tCur.textContent = fmt(audio.currentTime); }
+    }
+    requestAnimationFrame(tick);
+  })();
+  setTrack(0, false);
 
   /* ---------- Contact form (opens email app) ---------- */
   const form = $("#contactForm");
