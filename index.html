@@ -4,23 +4,52 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sid — Portfolio</title>
-  <link rel="icon" type="image/jpeg" href="favicon.png" />
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="apple-touch-icon" href="favicon.png" />
   <meta name="description" content="Portfolio of Sid — developer, creator and music lover." />
   <meta name="theme-color" content="#0a0f2c" />
+  <meta property="og:title" content="Sid — Portfolio" />
+  <meta property="og:description" content="Developer, creator and music lover." />
+  <meta property="og:type" content="website" />
+  <noscript>
+    <style>
+      .reveal { opacity: 1 !important; transform: none !important; }
+      .preloader { display: none !important; }
+      .skill__bar i { width: 80% !important; }
+    </style>
+  </noscript>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+
+  <!-- Intro screen: a click is needed so the browser allows the song to play -->
+  <div class="intro" id="intro" role="dialog" aria-modal="true" aria-label="Welcome">
+    <div class="intro__box">
+      <p class="eyebrow">Welcome 🌸</p>
+      <h2 class="hero__title grad">Dilruba Dilnasheen</h2>
+      <p class="hero__text">This site is best enjoyed with sound.</p>
+      <div class="hero__cta">
+        <button type="button" class="btn btn--primary" id="introSound">♪ Enter with music</button>
+        <button type="button" class="btn btn--ghost" id="introSkip">Enter silently</button>
+      </div>
+    </div>
+  </div>
+
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <!-- Icon sprite (used by the music player) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
     <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></symbol>
     <symbol id="i-pause" viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></symbol>
-    <symbol id="i-next" viewBox="0 0 24 24"><path d="M6 6l8.5 6L6 18zM16 6h2v12h-2z"/></symbol>
-    <symbol id="i-prev" viewBox="0 0 24 24"><path d="M18 6l-8.5 6 8.5 6zM6 6h2v12H6z"/></symbol>
+    <symbol id="i-prev" viewBox="0 0 24 24"><path d="M6 6h2v12H6zM9.5 12l8.5 6V6z"/></symbol>
+    <symbol id="i-next" viewBox="0 0 24 24"><path d="M16 6h2v12h-2zM6 18l8.5-6L6 6z"/></symbol>
     <symbol id="i-shuffle" viewBox="0 0 24 24"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></symbol>
     <symbol id="i-repeat" viewBox="0 0 24 24"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></symbol>
-    <symbol id="i-vol" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></symbol>
+    <symbol id="i-vol" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 8v8a4.47 4.47 0 0 0 2.5-4z"/><path class="vol-wave" d="M14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/><path class="slash" d="M3.3 3.3L2 4.6 19.4 22l1.3-1.3z"/></symbol>
   </svg>
 
   <!-- Preloader -->
@@ -50,10 +79,10 @@
       <a href="#projects">Works</a>
       <a href="#contact">Contact</a>
     </nav>
-    <button class="nav__burger" id="burger" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <button class="nav__burger" id="burger" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></button>
   </header>
 
-  <main>
+  <main id="main">
     <!-- HERO -->
     <section class="hero" id="home">
       <!-- Mount Fuji scene (inline SVG, no image file needed) -->
@@ -139,38 +168,56 @@
           <a href="#contact" class="btn btn--ghost">Let's Talk</a>
         </div>
         <div class="socials reveal">
-          <a href="https://x.com/KaifMansur56506" target="_blank" rel="noopener" aria-label="Twitter">Twitter</a>
-          <a href="https://github.com/kaifxcode?tab=overview&from=2026-11-01&to=2026-11-01" target="_blank" rel="noopener" aria-label="GitHub">GitHub</a>
+          <a href="https://x.com/KaifMansur56506" target="_blank" rel="noopener" aria-label="Twitter (X)">Twitter</a>
+          <a href="https://github.com/kaifxcode" target="_blank" rel="noopener" aria-label="GitHub">GitHub</a>
           <a href="https://www.instagram.com/kaif.mansuri.18/" target="_blank" rel="noopener" aria-label="Instagram">Instagram</a>
         </div>
       </div>
-      <a href="#about" class="scroll-hint" aria-label="Scroll down"><span></span></a>
+      <a href="#music" class="scroll-hint" aria-label="Scroll down"><span></span></a>
     </section>
 
     <!-- MUSIC -->
     <section class="section" id="music">
       <div class="container">
-        <h2 class="section__title reveal"><small>What I listen to</small>My Music Taste</h2>
+        <h2 class="section__title reveal"><small>01 · What I listen to</small>My Music Taste</h2>
 
         <div class="music">
           <div class="player glass reveal" id="player">
-            <div class="cover" id="cover"><b id="coverGlyph">A</b><small id="coverArtist"></small></div>
-            <div class="player__info">
-              <h3 id="nowTitle"></h3>
-              <p id="nowArtist"></p>
-              <div class="seek"><span id="tCur">0:00</span><input type="range" id="seek" min="0" max="1000" value="0" aria-label="Seek" /><span id="tDur">0:00</span></div>
-              <div class="ctrl">
-                <button class="tg" id="shuffleBtn" aria-label="Shuffle" aria-pressed="false"><svg class="ic"><use href="#i-shuffle"/></svg></button>
-                <button id="prevBtn" aria-label="Previous track"><svg class="ic"><use href="#i-prev"/></svg></button>
-                <button id="playBtn" class="play" aria-label="Play or pause"><svg class="ic i-play"><use href="#i-play"/></svg><svg class="ic i-pause"><use href="#i-pause"/></svg></button>
-                <button id="nextBtn" aria-label="Next track"><svg class="ic"><use href="#i-next"/></svg></button>
-                <button class="tg on" id="repeatBtn" aria-label="Repeat all" data-mode="all"><svg class="ic"><use href="#i-repeat"/></svg></button>
+            <div class="player__art" aria-hidden="true"><span>♪</span></div>
+
+            <div class="player__meta">
+              <div class="player__titles">
+                <small>Now playing</small>
+                <h3 id="nowTitle">Dilruba Dilnasheen</h3>
+                <p id="nowArtist">Intro song</p>
               </div>
-              <div class="vol"><button id="muteBtn" aria-label="Mute"><svg class="ic"><use href="#i-vol"/></svg></button><input type="range" id="vol" min="0" max="100" value="100" aria-label="Volume" /></div>
+              <button type="button" class="icon-btn like" id="likeBtn" aria-label="Like this song" aria-pressed="false"><svg aria-hidden="true"><use href="#i-heart"/></svg></button>
             </div>
+
+            <div class="seek">
+              <span id="curTime">0:00</span>
+              <input type="range" class="range" id="seek" min="0" max="1000" step="1" value="0" aria-label="Seek" disabled />
+              <span id="durTime">0:00</span>
+            </div>
+
+            <div class="controls">
+              <button type="button" class="icon-btn" id="shuffleBtn" aria-label="Shuffle" aria-pressed="false"><svg aria-hidden="true"><use href="#i-shuffle"/></svg></button>
+              <button type="button" class="icon-btn" id="prevBtn" aria-label="Previous song"><svg aria-hidden="true"><use href="#i-prev"/></svg></button>
+              <button type="button" class="icon-btn play-btn" id="playBtn" aria-label="Play">
+                <svg class="i-play" aria-hidden="true"><use href="#i-play"/></svg>
+                <svg class="i-pause" aria-hidden="true"><use href="#i-pause"/></svg>
+              </button>
+              <button type="button" class="icon-btn" id="nextBtn" aria-label="Next song"><svg aria-hidden="true"><use href="#i-next"/></svg></button>
+              <button type="button" class="icon-btn" id="repeatBtn" aria-label="Repeat: off" data-mode="off"><svg aria-hidden="true"><use href="#i-repeat"/></svg></button>
+            </div>
+
+            <div class="volume">
+              <button type="button" class="icon-btn" id="muteBtn" aria-label="Mute"><svg aria-hidden="true"><use href="#i-vol"/></svg></button>
+              <input type="range" class="range" id="volume" min="0" max="1" step="0.01" value="0.8" aria-label="Volume" />
+            </div>
+
+            <p class="player__status" id="playerStatus" role="status" aria-live="polite"></p>
           </div>
-
-
 
           <div class="music__side reveal">
             <h4>Favorite Genres</h4>
@@ -179,12 +226,66 @@
             </div>
 
             <h4>Top Tracks</h4>
-            <ul class="playlist" id="playlist">
-              <li class="active" data-title="Aadat" data-artist="Atif Aslam"><b>01</b><div><span>Aadat</span><em>Atif Aslam</em></div><i>♪</i></li>
-              <li data-title="Channa Mereya" data-artist="Arijit Singh"><b>02</b><div><span>Channa Mereya</span><em>Arijit Singh</em></div><i>♪</i></li>
-              <li data-title="Kuch Is Tarah" data-artist="Atif Aslam"><b>03</b><div><span>Kuch Is Tarah</span><em>Atif Aslam</em></div><i>♪</i></li>
-              <li data-title="Arz Kiya Hai" data-artist="Anuv Jain"><b>04</b><div><span>Arz Kiya Hai</span><em>Anuv Jain</em></div><i>♪</i></li>
-              <li data-title="Sahiba" data-artist="Aditya Rikhari"><b>05</b><div><span>Sahiba</span><em>Aditya Rikhari</em></div><i>♪</i></li>
+            <ul class="queue" id="playlist">
+              <li>
+                <button type="button" class="track active" data-title="Dilruba Dilnasheen" data-artist="Intro song" data-src="https://audio.jukehost.co.uk/01a1eed8-a7af-729d-a331-ec8d0cf27ebe" data-c1="#ff5c9d" data-c2="#ffd27a">
+                  <span class="track__lead"><b class="track__num">01</b><span class="track__eq" aria-hidden="true"><i></i><i></i><i></i></span></span>
+                  <span class="track__cover" aria-hidden="true">
+                  <img src="images/i1.jpg" alt="Dilruba Dilnasheen"></span>
+                  <span class="track__info"><span>Dilruba Dilnasheen</span><em>Intro song</em></span>
+                  <time class="track__dur">--:--</time>
+                </button>
+              </li>
+              <li>
+                <button type="button" class="track" data-title="Aadat" data-artist="Atif Aslam" data-src="https://audio.jukehost.co.uk/01a1973c-fc8f-7231-9a12-8647d104f235" data-c1="#ff5c9d" data-c2="#6a3df0">
+                  <span class="track__lead"><b class="track__num">02</b><span class="track__eq" aria-hidden="true"><i></i><i></i><i></i></span></span>
+                  <span class="track__cover" aria-hidden="true">
+                 <img src="images/i2.jpg" alt="Aadat"></span>
+                  <span class="track__info"><span>Aadat</span><em>Atif Aslam</em></span>
+                  <time class="track__dur">--:--</time>
+                </button>
+              </li>
+              <li>
+                <button type="button" class="track" data-title="Channa Mereya" data-artist="Arijit Singh" data-src="https://audio.jukehost.co.uk/01a1973c-fcf6-725b-b44f-45668e567d1c" data-c1="#3b5bdb" data-c2="#4fe3a1">
+                  <span class="track__lead"><b class="track__num">03</b><span class="track__eq" aria-hidden="true"><i></i><i></i><i></i></span></span>
+    
+                    <span class="track__cover" aria-hidden="true">
+                 <img src="images/i3.jpg" alt="Channa Mereya"></span>
+                  </span>
+                  <span class="track__info"><span>Channa Mereya</span><em>Arijit Singh</em></span>
+                  <time class="track__dur">--:--</time>
+                </button>
+              </li>
+              <li>
+                <button type="button" class="track" data-title="Kuch Is Tarah" data-artist="Atif Aslam" data-src="https://audio.jukehost.co.uk/01a1973c-fb40-71bb-b927-e06459c69962" data-c1="#ff8fb8" data-c2="#ffd27a">
+                  <span class="track__lead"><b class="track__num">04</b><span class="track__eq" aria-hidden="true"><i></i><i></i><i></i></span></span>
+                  <span class="track__cover" aria-hidden="true">
+                <img src="images/i4.jpg" alt="Aadat"></span>
+                  </span>
+                  <span class="track__info"><span>Kuch Is Tarah</span><em>Atif Aslam</em></span>
+                  <time class="track__dur">--:--</time>
+                </button>
+              </li>
+              <li>
+                <button type="button" class="track" data-title="Arz Kiya Hai" data-artist="Anuv Jain" data-src="https://audio.jukehost.co.uk/01a1975c-2090-73bb-9e7b-9d991b1069e2" data-c1="#4fe3a1" data-c2="#1b2a7a">
+                  <span class="track__lead"><b class="track__num">05</b><span class="track__eq" aria-hidden="true"><i></i><i></i><i></i></span></span>
+                  <span class="track__cover" aria-hidden="true">
+                <img src="images/i5.jpg" alt="Aadat"></span>
+                  </span>
+                  <span class="track__info"><span>Arz Kiya Hai</span><em>Anuv Jain</em></span>
+                  <time class="track__dur">--:--</time>
+                </button>
+              </li>
+              <li>
+                <button type="button" class="track" data-title="Sahiba" data-artist="Aditya Rikhari" data-src="https://audio.jukehost.co.uk/01a1975c-36e7-737f-996b-20e8efe2906d" data-c1="#7aa2ff" data-c2="#ff5c9d">
+                  <span class="track__lead"><b class="track__num">06</b><span class="track__eq" aria-hidden="true"><i></i><i></i><i></i></span></span>
+                  <span class="track__cover" aria-hidden="true">
+                  <img src="images/i6.jpg" alt="Sahiba"></span>
+                  </span>
+                  <span class="track__info"><span>Sahiba</span><em>Aditya Rikhari</em></span>
+                  <time class="track__dur">--:--</time>
+                </button>
+              </li>
             </ul>
           </div>
         </div>
@@ -194,15 +295,14 @@
       </div>
     </section>
 
-    
     <!-- ABOUT -->
     <section class="section" id="about">
       <div class="container">
-        <h2 class="section__title reveal"><small>Who I am</small>About Me</h2>
+        <h2 class="section__title reveal"><small>02 · Who I am</small>About Me</h2>
         <div class="about">
           <div class="about__card glass reveal">
             <div class="avatar">
-               <img src="https://i.ibb.co/chbMggMt/cropped-circle-image.png" alt="screenshot" />
+               <img src="https://i.ibb.co/chbMggMt/cropped-circle-image.png" alt="Portrait of Sid" width="250" height="250" loading="lazy" />
             </div>
           </div>
           <div class="about__text reveal">
@@ -221,7 +321,7 @@
     <!-- SKILLS -->
     <section class="section" id="skills">
       <div class="container">
-        <h2 class="section__title reveal"><small>What I do</small>My Skills</h2>
+        <h2 class="section__title reveal"><small>03 · What I do</small>My Skills</h2>
         <div class="skills">
           <div class="skill glass reveal" data-level="90"><div class="skill__top"><span>HTML & CSS</span><em>90%</em></div><div class="skill__bar"><i></i></div></div>
           <div class="skill glass reveal" data-level="85"><div class="skill__top"><span>JavaScript</span><em>85%</em></div><div class="skill__bar"><i></i></div></div>
@@ -239,33 +339,31 @@
     <!-- PROJECTS -->
     <section class="section" id="projects">
       <div class="container">
-        <h2 class="section__title reveal"><small>My projects</small>My Works</h2>
+        <h2 class="section__title reveal"><small>04 · My projects</small>My Works</h2>
         <div class="filters reveal" id="filters">
           <button class="chip active" data-filter="all">All</button>
           <button class="chip" data-filter="web">Websites</button>
           <button class="chip" data-filter="app">Apps</button>
-          <button class="chip" data-filter="tr">Trinetra Base-One</button>
           <button class="chip" data-filter="design">Design</button>
+          <button class="chip" data-filter="tr">Trinetra Base-One</button>
         </div>
 
-        
-
         <div class="projects" id="projects-grid">
-          <article class="project glass tilt reveal" data-cat="tr">
+          <article class="project glass tilt reveal" data-cat="web tr">
             <div class="project__thumb t1"><span>Web</span></div>
             <div class="project__body">
               <h3>Upcoming One (makeoverbyreet)</h3>
-              <p>A responsive website with smooth animations. Describe what it does and the tech you used.</p>
+              <p>A responsive makeover and beauty website with smooth animations and a clean, modern layout.</p>
               <div class="project__tech"><span>HTML</span><span>CSS</span><span>JS</span></div>
               <div class="project__links"><a href="https://kaifxcode.github.io/reet/" target="_blank" rel="noopener">Live ↗</a></div>
             </div>
           </article>
 
-          <article class="project glass tilt reveal" data-cat="web">
+          <article class="project glass tilt reveal" data-cat="web app">
             <div class="project__thumb t2"><span>App</span></div>
             <div class="project__body">
               <h3>DiduFlix</h3>
-              <p>A streaming platform for watching movies and TV shows ofcourse(For My Sis ).</p>
+              <p>A streaming platform for watching movies and TV shows, built for my sister.</p>
               <div class="project__tech"><span>React</span><span>Node</span><span>MongoDB</span></div>
               <div class="project__links"><a href="https://diduflix.kaifmansuri986-395.workers.dev/#home" target="_blank" rel="noopener">Live ↗</a></div>
             </div>
@@ -281,14 +379,13 @@
             </div>
           </article>
 
-
           <article class="project glass tilt reveal" data-cat="web">
             <div class="project__thumb t4"><span>Web</span></div>
             <div class="project__body">
               <h3>SoldOut!</h3>
               <p>An e-commerce landing page with animated product sections and fast load time.</p>
               <div class="project__tech"><span>Tailwind</span><span>JS</span></div>
-              
+              <div class="project__links"><span class="soon">Coming soon</span></div>
             </div>
           </article>
 
@@ -298,7 +395,7 @@
               <h3>Habiteer</h3>
               <p>A productivity tool that helps users plan their day and track their habits.</p>
               <div class="project__tech"><span>Python</span><span>Flask</span><span>SQL</span></div>
-              <div class="project__links"><a href="#" target="_blank" rel="noopener">Live ↗</a><a href="#" target="_blank" rel="noopener">Code ↗</a></div>
+              <div class="project__links"><span class="soon">Coming soon</span></div>
             </div>
           </article>
 
@@ -308,7 +405,7 @@
               <h3>Project Six</h3>
               <p>Brand identity and poster set inspired by Japanese art and mythology.</p>
               <div class="project__tech"><span>Branding</span><span>Poster</span></div>
-              <div class="project__links"><a href="#" target="_blank" rel="noopener">View ↗</a></div>
+              <div class="project__links"><span class="soon">Coming soon</span></div>
             </div>
           </article>
         </div>
@@ -318,23 +415,23 @@
     <!-- CONTACT -->
     <section class="section" id="contact">
       <div class="container">
-        <h2 class="section__title reveal"><small>Say hello</small>Get In Touch</h2>
+        <h2 class="section__title reveal"><small>05 · Say hello</small>Get In Touch</h2>
         <div class="contact">
           <div class="contact__info reveal">
             <p>Have a project in mind or just want to say hi? My inbox is always open.</p>
             <ul>
-              <li><span>Email</span><a href="mailto:kaifmansuri986@gmail.com">kaifmansuri986@gmail.com</a></li>
-              <li><span>Instagram</span><a href="https://www.instagram.com/kaif.mansuri.18/"target="_blank" rel="noopener">@kaif.mansuri.18</a></li>
+              <li><span>Email</span><a href="mailto:kaifmansuri986@gmail.com">kaifmansuri986@gmail.com</a> <button type="button" class="copy" id="copyEmail">Copy email</button></li>
+              <li><span>Instagram</span><a href="https://www.instagram.com/kaif.mansuri.18/" target="_blank" rel="noopener">@kaif.mansuri.18</a></li>
               <li><span>Location</span>India</li>
               <li><span>Status</span><em class="online">Available for work</em></li>
             </ul>
           </div>
           <form class="contact__form glass reveal" id="contactForm">
-            <input type="text" name="name" placeholder="Your Name" required />
-            <input type="email" name="email" placeholder="Your Email" required />
-            <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
+            <input type="text" name="name" placeholder="Your Name" aria-label="Your name" autocomplete="name" required />
+            <input type="email" name="email" placeholder="Your Email" aria-label="Your email" autocomplete="email" required />
+            <textarea name="message" rows="5" placeholder="Your Message" aria-label="Your message" required></textarea>
             <button type="submit" class="btn btn--primary">Send Message</button>
-            <p class="form-note" id="formNote"></p>
+            <p class="form-note" id="formNote" aria-live="polite"></p>
           </form>
         </div>
       </div>
@@ -345,13 +442,20 @@
     <p>© <span id="year"></span> Sid · Crafted with 🌸 and 🐉</p>
   </footer>
 
-  <div class="mini" id="mini">
-    <div class="mini__cover" id="miniCover"></div>
-    <div class="mini__txt" id="miniInfo"><b id="miniTitle"></b><span id="miniArtist"></span></div>
-    <button id="miniPrev" aria-label="Previous track"><svg class="ic"><use href="#i-prev"/></svg></button>
-    <button id="miniPlay" aria-label="Play or pause"><svg class="ic i-play"><use href="#i-play"/></svg><svg class="ic i-pause"><use href="#i-pause"/></svg></button>
-    <button id="miniNext" aria-label="Next track"><svg class="ic"><use href="#i-next"/></svg></button>
-    <i class="mini__bar" id="miniBar"></i>
+  <!-- Mini player: appears when you scroll away from the Music section -->
+  <div class="mini" id="mini" role="region" aria-label="Mini player">
+    <button type="button" class="mini__go" id="miniGo" aria-label="Go to music player">
+      <span class="mini__art" aria-hidden="true">♪</span>
+      <span class="mini__info"><b id="miniTitle"></b><em id="miniArtist"></em></span>
+    </button>
+    <div class="mini__ctrl">
+      <button type="button" class="icon-btn" id="miniPrev" aria-label="Previous song"><svg aria-hidden="true"><use href="#i-prev"/></svg></button>
+      <button type="button" class="icon-btn play-btn" id="miniPlay" aria-label="Play">
+        <svg class="i-play" aria-hidden="true"><use href="#i-play"/></svg>
+        <svg class="i-pause" aria-hidden="true"><use href="#i-pause"/></svg>
+      </button>
+      <button type="button" class="icon-btn" id="miniNext" aria-label="Next song"><svg aria-hidden="true"><use href="#i-next"/></svg></button>
+    </div>
   </div>
 
   <button class="to-top" id="toTop" aria-label="Back to top">↑</button>
