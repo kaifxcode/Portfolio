@@ -13,11 +13,32 @@
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* storage blocked */ } },
   };
 
-  /* ---------- Preloader (with a safety timeout) ---------- */
-  const preloader = $("#preloader");
-  const hidePreloader = () => preloader.classList.add("done");
-  window.addEventListener("load", () => setTimeout(hidePreloader, 1200));
-  setTimeout(hidePreloader, 5000);
+  /* ---------- Preloader: a sakura blooms petal by petal as the page loads ---------- */
+  const preloader = $("#preloader"), prePct = $("#preloadPct"), prePetals = $$("#preloader .petal");
+  const PRE_MIN = 2200, preStart = performance.now(), PETAL_AT = [5, 25, 45, 65, 82];
+  let pageLoaded = document.readyState === "complete", preShown = 0, preDone = false;
+  const finishPreloader = () => {
+    if (preDone) return;
+    preDone = true;
+    preloader.classList.add("done");
+    document.body.classList.add("loaded");
+  };
+  addEventListener("load", () => { pageLoaded = true; });
+  (function preTick(now) {
+    if (preDone) return;
+    const target = pageLoaded ? 100 : Math.min(88, ((now - preStart) / PRE_MIN) * 88);
+    preShown += (target - preShown) * 0.07;
+    prePct.textContent = Math.round(preShown);
+    prePetals.forEach((p, i) => p.classList.toggle("on", preShown >= PETAL_AT[i]));
+    if (pageLoaded && now - preStart >= PRE_MIN && preShown > 99) {
+      prePct.textContent = 100;
+      preloader.classList.add("bloom"); // golden centre appears
+      setTimeout(finishPreloader, 900);
+      return;
+    }
+    requestAnimationFrame(preTick);
+  })(preStart);
+  setTimeout(finishPreloader, 6000); // safety: never get stuck
 
   /* ---------- Year ---------- */
   $("#year").textContent = new Date().getFullYear();
@@ -162,7 +183,7 @@
 
   const tracks = $$("#playlist .track").map(btn => ({
     btn, title: btn.dataset.title, artist: btn.dataset.artist, src: btn.dataset.src,
-    c1: btn.dataset.c1, c2: btn.dataset.c2, durEl: $(".track__dur", btn), dur: 0,
+    img: btn.dataset.img, c1: btn.dataset.c1, c2: btn.dataset.c2, durEl: $(".track__dur", btn), dur: 0,
   }));
   let index = 0, history = [], shuffle = store.get("shuffle", false), repeat = store.get("repeat", "off");
   let wantPlay = false, started = false, seeking = false, musicInView = false, errorStreak = 0, statusTimer;
@@ -198,6 +219,7 @@
     const t = tracks[i];
     tracks.forEach((x, k) => { x.btn.classList.toggle("active", k === i); x.btn.setAttribute("aria-current", k === i); });
     nowTitle.textContent = $("#miniTitle").textContent = t.title;
+    el("artImg").src = el("miniImg").src = t.img; // cover art
     nowArtist.textContent = $("#miniArtist").textContent = t.artist;
     [player, mini].forEach(n => { n.style.setProperty("--c1", t.c1); n.style.setProperty("--c2", t.c2); });
     seek.value = 0; setFill(seek, 0); setFill(mini, 0);
@@ -348,7 +370,7 @@
     const t = tracks[index];
     navigator.mediaSession.metadata = new MediaMetadata({
       title: t.title, artist: t.artist, album: "Sid's Top Tracks",
-      artwork: [{ src: "favicon.png", sizes: "512x512", type: "image/png" }],
+      artwork: [{ src: t.img }],
     });
   }
   if ("mediaSession" in navigator) {

@@ -109,30 +109,50 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   box-shadow: 0 0 12px var(--pink);
 }
 
-/* ---------------- Preloader ---------------- */
+/* ---------------- Preloader (sakura bloom) ---------------- */
 .preloader {
-  position: fixed; inset: 0; z-index: 999;
-  background: radial-gradient(circle at center, #1a2468, var(--ink));
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px;
-  transition: opacity 0.9s var(--ease), visibility 0.9s;
+  position: fixed; inset: 0; z-index: 1200; overflow: hidden;
+  background: radial-gradient(circle at 50% 45%, #1d2770, var(--ink) 75%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+  transition: opacity 0.9s var(--ease) 0.2s, visibility 0.9s 0.2s;
 }
 .preloader.done { opacity: 0; visibility: hidden; }
-.preloader__kanji {
-  font-family: "Cinzel", serif;
-  font-size: 5.5rem; line-height: 1; font-weight: 700; letter-spacing: 6px;
-  background: linear-gradient(135deg, var(--pink), var(--jade));
-  -webkit-background-clip: text; background-clip: text; color: transparent;
-  animation: pulse 1.6s ease-in-out infinite;
-  filter: drop-shadow(0 0 25px rgba(255, 92, 157, 0.6));
+.preloader__glow {
+  position: absolute; width: 440px; height: 440px; max-width: 90vw; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 92, 157, 0.26), transparent 65%); animation: preGlow 3.2s ease-in-out infinite;
 }
-.preloader__bar { width: 180px; height: 3px; background: rgba(255,255,255,0.12); border-radius: 4px; overflow: hidden; }
-.preloader__bar span {
-  display: block; height: 100%; width: 0;
-  background: linear-gradient(90deg, var(--pink), var(--jade));
-  animation: load 1.4s var(--ease) forwards;
+.pre-flower { position: relative; width: 190px; height: 190px; animation: preIn 1s var(--ease) both; filter: drop-shadow(0 0 18px rgba(255, 92, 157, 0.45)); transition: transform 0.9s var(--ease), opacity 0.7s; }
+.pre-flower svg { width: 100%; height: 100%; overflow: visible; animation: preSpin 30s linear infinite; }
+.petal {
+  fill: url(#pg); opacity: 0; transform: rotate(-25deg) scale(0.15);
+  transform-box: fill-box; transform-origin: 50% 100%;
+  transition: transform 1s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.6s;
 }
-@keyframes load { to { width: 100%; } }
-@keyframes pulse { 50% { transform: scale(1.08); opacity: 0.8; } }
+.petal.on { opacity: 1; transform: none; }
+.pre-core { fill: #ffd27a; transform: scale(0); transform-box: fill-box; transform-origin: center; transition: transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.preloader.bloom .pre-core { transform: scale(1); }
+.preloader.done .pre-flower { transform: scale(1.35); opacity: 0; }
+.pre-name {
+  position: relative; font-family: "Cinzel", serif; font-size: 1.5rem; font-weight: 700; letter-spacing: 10px; padding-left: 10px;
+  background: linear-gradient(135deg, var(--pink), var(--jade)); -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: preName 1.2s var(--ease) 0.2s both;
+}
+.preloader__pct { position: relative; font-size: 0.8rem; letter-spacing: 3px; color: var(--muted); font-variant-numeric: tabular-nums; animation: preIn 1s var(--ease) 0.4s both; }
+.preloader.done .pre-name, .preloader.done .preloader__pct { opacity: 0; transition: opacity 0.4s; }
+.pre-fall { position: absolute; inset: 0; pointer-events: none; }
+.pre-fall i { position: absolute; top: -20px; width: 9px; height: 12px; border-radius: 100% 0 100% 0; opacity: 0.7; background: linear-gradient(135deg, #ffc2dc, #ff5c9d); animation: preFall 10s linear infinite; }
+.pre-fall i:nth-child(1) { left: 8%; animation-duration: 9s; }
+.pre-fall i:nth-child(2) { left: 24%; animation-duration: 12s; animation-delay: -4s; width: 7px; height: 9px; }
+.pre-fall i:nth-child(3) { left: 42%; animation-duration: 10s; animation-delay: -7s; }
+.pre-fall i:nth-child(4) { left: 61%; animation-duration: 13s; animation-delay: -2s; width: 7px; height: 9px; }
+.pre-fall i:nth-child(5) { left: 78%; animation-duration: 11s; animation-delay: -9s; }
+.pre-fall i:nth-child(6) { left: 92%; animation-duration: 14s; animation-delay: -5s; width: 7px; height: 9px; }
+@keyframes preIn { from { opacity: 0; transform: scale(0.9); } }
+@keyframes preName { from { opacity: 0; letter-spacing: 22px; filter: blur(8px); } }
+@keyframes preGlow { 50% { transform: scale(1.15); opacity: 0.7; } }
+@keyframes preSpin { to { transform: rotate(360deg); } }
+@keyframes preFall { from { transform: translate(0, -5vh) rotate(0); } to { transform: translate(-14vw, 108vh) rotate(540deg); } }
+@media (max-width: 760px) { .pre-flower { width: 160px; height: 160px; } }
 
 /* ---------------- Navigation ---------------- */
 .nav {
@@ -673,7 +693,6 @@ body.mini-on .to-top { bottom: 92px; }
   .contact__form input, .contact__form textarea { font-size: 16px; } /* stops iOS zoom-on-focus */
 
   .to-top { right: 16px; bottom: 16px; width: 44px; height: 44px; }
-  .preloader__kanji { font-size: 4rem; }
 }
 
 @media (max-width: 400px) {
@@ -747,3 +766,11 @@ body.intro-open { overflow: hidden; }
     border-radius: inherit;
     display: block;
 }
+
+/* ---------------- Cover art ---------------- */
+.player__art, .mini__art { overflow: hidden; }
+.player__art img, .mini__art img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* intro content appears right after the preloader finishes */
+.intro__box { opacity: 0; transform: translateY(20px); }
+body.loaded .intro__box { opacity: 1; transform: none; transition: opacity 0.9s var(--ease) 0.5s, transform 0.9s var(--ease) 0.5s; }

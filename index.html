@@ -53,9 +53,24 @@
   </svg>
 
   <!-- Preloader -->
-  <div class="preloader" id="preloader">
-    <div class="preloader__kanji">Sid</div>
-    <div class="preloader__bar"><span></span></div>
+  <div class="preloader" id="preloader" role="status" aria-label="Loading">
+    <div class="pre-fall" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="preloader__glow" aria-hidden="true"></div>
+    <div class="pre-flower">
+      <svg viewBox="-100 -100 200 200" aria-hidden="true">
+        <defs><linearGradient id="pg" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ff5c9d"/><stop offset="1" stop-color="#ffd0e4"/></linearGradient></defs>
+        <g>
+          <g transform="rotate(0)"><path class="petal" d="M0 0 C-23 -26 -29 -62 -8 -81 L0 -73 L8 -81 C29 -62 23 -26 0 0Z"/></g>
+          <g transform="rotate(72)"><path class="petal" d="M0 0 C-23 -26 -29 -62 -8 -81 L0 -73 L8 -81 C29 -62 23 -26 0 0Z"/></g>
+          <g transform="rotate(144)"><path class="petal" d="M0 0 C-23 -26 -29 -62 -8 -81 L0 -73 L8 -81 C29 -62 23 -26 0 0Z"/></g>
+          <g transform="rotate(216)"><path class="petal" d="M0 0 C-23 -26 -29 -62 -8 -81 L0 -73 L8 -81 C29 -62 23 -26 0 0Z"/></g>
+          <g transform="rotate(288)"><path class="petal" d="M0 0 C-23 -26 -29 -62 -8 -81 L0 -73 L8 -81 C29 -62 23 -26 0 0Z"/></g>
+        </g>
+        <circle class="pre-core" r="9"/>
+      </svg>
+    </div>
+    <div class="pre-name">Sid</div>
+    <div class="preloader__pct"><span id="preloadPct">0</span>%</div>
   </div>
 
   <!-- Background layers -->
@@ -183,13 +198,13 @@
 
         <div class="music">
           <div class="player glass reveal" id="player">
-            <div class="player__art" aria-hidden="true"><span>♪</span></div>
+            <div class="player__art"><img id="artImg" src="images/i1.jpg" alt="Album cover"></div>
 
             <div class="player__meta">
               <div class="player__titles">
                 <small>Now playing</small>
                 <h3 id="nowTitle">Dilruba Dilnasheen</h3>
-                <p id="nowArtist">Intro song</p>
+                <p id="nowArtist">Rito Riba</p>
               </div>
               <button type="button" class="icon-btn like" id="likeBtn" aria-label="Like this song" aria-pressed="false"><svg aria-hidden="true"><use href="#i-heart"/></svg></button>
             </div>
@@ -228,60 +243,49 @@
             <h4>Top Tracks</h4>
             <ul class="queue" id="playlist">
               <li>
-                <button type="button" class="track active" data-title="Dilruba Dilnasheen" data-artist="Intro song" data-src="https://audio.jukehost.co.uk/01a1eed8-a7af-729d-a331-ec8d0cf27ebe" data-c1="#ff5c9d" data-c2="#ffd27a">
+                <button type="button" class="track active" data-title="Dilruba Dilnasheen" data-artist="Rito Riba" data-src="https://audio.jukehost.co.uk/01a1eed8-a7af-729d-a331-ec8d0cf27ebe" data-img="images/i1.jpg" data-c1="#ff5c9d" data-c2="#ffd27a">
                   <span class="track__lead"><b class="track__num">01</b><span class="track__eq" aria-hidden="true"><i></i><i></i><i></i></span></span>
-                  <span class="track__cover" aria-hidden="true">
-                  <img src="images/i1.jpg" alt="Dilruba Dilnasheen"></span>
-                  <span class="track__info"><span>Dilruba Dilnasheen</span><em>Intro song</em></span>
+                  <span class="track__cover" aria-hidden="true"><img src="images/i1.jpg" alt="" loading="lazy"></span>
+                  <span class="track__info"><span>Dilruba Dilnasheen</span><em>Rito Riba</em></span>
                   <time class="track__dur">--:--</time>
                 </button>
               </li>
               <li>
-                <button type="button" class="track" data-title="Aadat" data-artist="Atif Aslam" data-src="https://audio.jukehost.co.uk/01a1973c-fc8f-7231-9a12-8647d104f235" data-c1="#ff5c9d" data-c2="#6a3df0">
+                <button type="button" class="track" data-title="Aadat" data-artist="Atif Aslam" data-src="https://audio.jukehost.co.uk/01a1973c-fc8f-7231-9a12-8647d104f235" data-img="images/i2.jpg" data-c1="#ff5c9d" data-c2="#6a3df0">
                   <span class="track__lead"><b class="track__num">02</b><span class="track__eq" aria-hidden="true"><i></i><i></i><i></i></span></span>
-                  <span class="track__cover" aria-hidden="true">
-                 <img src="images/i2.jpg" alt="Aadat"></span>
+                  <span class="track__cover" aria-hidden="true"><img src="images/i2.jpg" alt="" loading="lazy"></span>
                   <span class="track__info"><span>Aadat</span><em>Atif Aslam</em></span>
                   <time class="track__dur">--:--</time>
                 </button>
               </li>
               <li>
-                <button type="button" class="track" data-title="Channa Mereya" data-artist="Arijit Singh" data-src="https://audio.jukehost.co.uk/01a1973c-fcf6-725b-b44f-45668e567d1c" data-c1="#3b5bdb" data-c2="#4fe3a1">
+                <button type="button" class="track" data-title="Channa Mereya" data-artist="Arijit Singh" data-src="https://audio.jukehost.co.uk/01a1973c-fcf6-725b-b44f-45668e567d1c" data-img="images/i3.jpg" data-c1="#3b5bdb" data-c2="#4fe3a1">
                   <span class="track__lead"><b class="track__num">03</b><span class="track__eq" aria-hidden="true"><i></i><i></i><i></i></span></span>
-    
-                    <span class="track__cover" aria-hidden="true">
-                 <img src="images/i3.jpg" alt="Channa Mereya"></span>
-                  </span>
+                  <span class="track__cover" aria-hidden="true"><img src="images/i3.jpg" alt="" loading="lazy"></span>
                   <span class="track__info"><span>Channa Mereya</span><em>Arijit Singh</em></span>
                   <time class="track__dur">--:--</time>
                 </button>
               </li>
               <li>
-                <button type="button" class="track" data-title="Kuch Is Tarah" data-artist="Atif Aslam" data-src="https://audio.jukehost.co.uk/01a1973c-fb40-71bb-b927-e06459c69962" data-c1="#ff8fb8" data-c2="#ffd27a">
+                <button type="button" class="track" data-title="Kuch Is Tarah" data-artist="Atif Aslam" data-src="https://audio.jukehost.co.uk/01a1973c-fb40-71bb-b927-e06459c69962" data-img="images/i4.jpg" data-c1="#ff8fb8" data-c2="#ffd27a">
                   <span class="track__lead"><b class="track__num">04</b><span class="track__eq" aria-hidden="true"><i></i><i></i><i></i></span></span>
-                  <span class="track__cover" aria-hidden="true">
-                <img src="images/i4.jpg" alt="Aadat"></span>
-                  </span>
+                  <span class="track__cover" aria-hidden="true"><img src="images/i4.jpg" alt="" loading="lazy"></span>
                   <span class="track__info"><span>Kuch Is Tarah</span><em>Atif Aslam</em></span>
                   <time class="track__dur">--:--</time>
                 </button>
               </li>
               <li>
-                <button type="button" class="track" data-title="Arz Kiya Hai" data-artist="Anuv Jain" data-src="https://audio.jukehost.co.uk/01a1975c-2090-73bb-9e7b-9d991b1069e2" data-c1="#4fe3a1" data-c2="#1b2a7a">
+                <button type="button" class="track" data-title="Arz Kiya Hai" data-artist="Anuv Jain" data-src="https://audio.jukehost.co.uk/01a1975c-2090-73bb-9e7b-9d991b1069e2" data-img="images/i5.jpg" data-c1="#4fe3a1" data-c2="#1b2a7a">
                   <span class="track__lead"><b class="track__num">05</b><span class="track__eq" aria-hidden="true"><i></i><i></i><i></i></span></span>
-                  <span class="track__cover" aria-hidden="true">
-                <img src="images/i5.jpg" alt="Aadat"></span>
-                  </span>
+                  <span class="track__cover" aria-hidden="true"><img src="images/i5.jpg" alt="" loading="lazy"></span>
                   <span class="track__info"><span>Arz Kiya Hai</span><em>Anuv Jain</em></span>
                   <time class="track__dur">--:--</time>
                 </button>
               </li>
               <li>
-                <button type="button" class="track" data-title="Sahiba" data-artist="Aditya Rikhari" data-src="https://audio.jukehost.co.uk/01a1975c-36e7-737f-996b-20e8efe2906d" data-c1="#7aa2ff" data-c2="#ff5c9d">
+                <button type="button" class="track" data-title="Sahiba" data-artist="Aditya Rikhari" data-src="https://audio.jukehost.co.uk/01a1975c-36e7-737f-996b-20e8efe2906d" data-img="images/i6.jpg" data-c1="#7aa2ff" data-c2="#ff5c9d">
                   <span class="track__lead"><b class="track__num">06</b><span class="track__eq" aria-hidden="true"><i></i><i></i><i></i></span></span>
-                  <span class="track__cover" aria-hidden="true">
-                  <img src="images/i6.jpg" alt="Sahiba"></span>
-                  </span>
+                  <span class="track__cover" aria-hidden="true"><img src="images/i6.jpg" alt="" loading="lazy"></span>
                   <span class="track__info"><span>Sahiba</span><em>Aditya Rikhari</em></span>
                   <time class="track__dur">--:--</time>
                 </button>
@@ -445,7 +449,7 @@
   <!-- Mini player: appears when you scroll away from the Music section -->
   <div class="mini" id="mini" role="region" aria-label="Mini player">
     <button type="button" class="mini__go" id="miniGo" aria-label="Go to music player">
-      <span class="mini__art" aria-hidden="true">♪</span>
+      <span class="mini__art" aria-hidden="true"><img id="miniImg" src="images/i1.jpg" alt=""></span>
       <span class="mini__info"><b id="miniTitle"></b><em id="miniArtist"></em></span>
     </button>
     <div class="mini__ctrl">
