@@ -735,7 +735,7 @@ body.menu-open { overflow: hidden; }
   .player { padding: 22px 18px; }
   .player__art { width: min(100%, 250px); }
   .music__side h4 { text-align: center; }
-  .queue { max-height: none; }
+  .queue { max-height: 380px; }
   .track { padding: 9px 12px; gap: 12px; }
   .track:hover { transform: none; }
   .mini { bottom: 12px; }
@@ -774,3 +774,31 @@ body.intro-open { overflow: hidden; }
 /* intro content appears right after the preloader finishes */
 .intro__box { opacity: 0; transform: translateY(20px); }
 body.loaded .intro__box { opacity: 1; transform: none; transition: opacity 0.9s var(--ease) 0.5s, transform 0.9s var(--ease) 0.5s; }
+
+/* ---------------- Long lists: Show more + song search ---------------- */
+@media (min-width: 761px) { .project.more-hidden { display: none; } }
+.more-wrap { display: flex; justify-content: center; margin-top: 34px; }
+.more-wrap[hidden] { display: none; }
+.queue-search {
+  width: 100%; margin-bottom: 12px; padding: 10px 16px; border-radius: 12px; font: inherit; color: inherit;
+  background: rgba(255, 255, 255, 0.06); border: 1px solid var(--glass-border);
+}
+.queue-search:focus { outline: none; border-color: var(--pink); }
+
+/* ---------------- Mobile: swipeable project carousel ---------------- */
+.proj-dots { display: none; }
+@media (max-width: 760px) {
+  .projects {
+    position: relative; display: flex; gap: 16px; overflow-x: auto; overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory; scroll-padding-inline: 20px; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+    margin-inline: calc(50% - 50vw); padding: 6px 20px 16px;
+  }
+  .projects::-webkit-scrollbar { display: none; }
+  .projects .project { flex: 0 0 82%; max-width: 360px; scroll-snap-align: start; }
+  .projects .project.reveal { opacity: 1; transform: none; filter: none; }
+  .more-wrap { display: none; }
+  .proj-dots { display: flex; justify-content: center; align-items: center; gap: 7px; margin-top: 6px; min-height: 12px; }
+  .proj-dots .dot { width: 7px; height: 7px; padding: 0; border-radius: 7px; background: rgba(255, 255, 255, 0.28); transition: width 0.35s var(--ease), background 0.35s; }
+  .proj-dots .dot.active { width: 26px; background: var(--pink); }
+  .proj-count { font-size: 0.85rem; letter-spacing: 2px; color: var(--muted); font-variant-numeric: tabular-nums; }
+}

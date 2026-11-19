@@ -150,24 +150,75 @@
     card.addEventListener("mouseleave", () => { card.style.transform = ""; });
   });
 
-  /* ---------- Project filter (a project can have several categories) ---------- */
+  /* ---------- Project filter + "Show more" (keeps the page short when you add many projects) ---------- */
   const chips = $$(".chip"), projects = $$(".project");
+  const PAGE = 6; // how many projects show at first, and per click
+  let activeFilter = "all", limit = PAGE;
+  const moreWrap = document.createElement("div");
+  moreWrap.className = "more-wrap";
+  moreWrap.innerHTML = '<button type="button" class="btn btn--ghost" id="moreProjects"></button>';
+  $(".projects").after(moreWrap);
+  const moreBtn = $("#moreProjects");
+
+  /* mobile: projects become a swipe carousel with dots (or "3 / 12" when there are many) */
+  const projectsEl = $(".projects");
+  const dots = document.createElement("div");
+  dots.className = "proj-dots";
+  projectsEl.after(dots);
+  let shown = [];
+  function updateDots() {
+    if (!shown.length) return;
+    const x = projectsEl.scrollLeft + 20;
+    let best = 0, bd = Infinity;
+    shown.forEach((p, i) => { const d = Math.abs(p.offsetLeft - x); if (d < bd) { bd = d; best = i; } });
+    if (projectsEl.scrollLeft + projectsEl.clientWidth >= projectsEl.scrollWidth - 4) best = shown.length - 1;
+    $$(".dot", dots).forEach((d, i) => d.classList.toggle("active", i === best));
+    const cnt = $(".proj-count", dots);
+    if (cnt) cnt.textContent = `${best + 1} / ${shown.length}`;
+  }
+  function buildDots(list) {
+    shown = list;
+    if (list.length <= 1) { dots.innerHTML = ""; return; }
+    dots.innerHTML = list.length > 8
+      ? '<span class="proj-count"></span>'
+      : list.map((_, i) => `<button type="button" class="dot" aria-label="Go to project ${i + 1}"></button>`).join("");
+    $$(".dot", dots).forEach((d, i) => d.addEventListener("click", () =>
+      projectsEl.scrollTo({ left: shown[i].offsetLeft - 20, behavior: reduceMotion ? "auto" : "smooth" })));
+    updateDots();
+  }
+  projectsEl.addEventListener("scroll", () => requestAnimationFrame(updateDots), { passive: true });
+  addEventListener("resize", updateDots);
+
+  function renderProjects(animateAll) {
+    const matches = projects.filter(p => activeFilter === "all" || p.dataset.cat.split(" ").includes(activeFilter));
+    projects.forEach(p => p.classList.toggle("hide", !matches.includes(p)));
+    matches.forEach((p, i) => {
+      const wasHidden = p.classList.contains("more-hidden");
+      const hidden = i >= limit;
+      p.classList.toggle("more-hidden", hidden);
+      if (hidden || !(animateAll || wasHidden)) return;
+      io.unobserve(p);
+      p.style.transitionDelay = "";
+      p.classList.add("show"); // makes sure newly shown cards are visible
+      if (!reduceMotion) { p.classList.remove("pop"); void p.offsetWidth; p.classList.add("pop"); }
+    });
+    const left = matches.length - limit;
+    moreWrap.hidden = left <= 0;
+    moreBtn.textContent = `Show more (${Math.max(left, 0)})`;
+    buildDots(matches);
+  }
   chips.forEach(ch => ch.setAttribute("aria-pressed", ch.classList.contains("active")));
   chips.forEach(chip => chip.addEventListener("click", () => {
     chips.forEach(x => { x.classList.remove("active"); x.setAttribute("aria-pressed", "false"); });
     chip.classList.add("active");
     chip.setAttribute("aria-pressed", "true");
-    const f = chip.dataset.filter;
-    projects.forEach(p => {
-      const match = f === "all" || p.dataset.cat.split(" ").includes(f);
-      p.classList.toggle("hide", !match);
-      if (!match) return;
-      io.unobserve(p);
-      p.style.transitionDelay = "";
-      p.classList.add("show"); // fixes cards staying invisible if they were filtered out before being revealed
-      if (!reduceMotion) { p.classList.remove("pop"); void p.offsetWidth; p.classList.add("pop"); }
-    });
+    activeFilter = chip.dataset.filter;
+    limit = PAGE;
+    projectsEl.scrollLeft = 0;
+    renderProjects(true);
   }));
+  moreBtn.addEventListener("click", () => { limit += PAGE; renderProjects(false); });
+  renderProjects(false);
 
   /* =========================================================
      Music player (Spotify / Apple Music style)
@@ -198,20 +249,42 @@
     statusTimer = setTimeout(() => { statusEl.textContent = ""; }, 4500);
   }
 
+  // song lengths are only loaded when a row scrolls into view (saves data with a long playlist)
+  const probeFns = new Map();
+  const probeIO = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    probeIO.unobserve(e.target);
+    probeFns.get(e.target)();
+  }), { rootMargin: "120px" });
+
   tracks.forEach((t, i) => {
     t.btn.style.setProperty("--c1", t.c1);
     t.btn.style.setProperty("--c2", t.c2);
     t.btn.addEventListener("click", () => (i === index ? toggle() : load(i, true)));
-    // read each song's length so the list can show it
-    const probe = new Audio();
-    probe.preload = "metadata";
-    probe.addEventListener("loadedmetadata", () => {
-      t.dur = probe.duration;
-      t.durEl.textContent = fmt(t.dur);
-      if (i === index) durTime.textContent = fmt(t.dur);
+    probeFns.set(t.btn, () => {
+      const probe = new Audio();
+      probe.preload = "metadata";
+      probe.addEventListener("loadedmetadata", () => {
+        t.dur = probe.duration;
+        t.durEl.textContent = fmt(t.dur);
+        if (i === index) durTime.textContent = fmt(t.dur);
+      });
+      probe.src = t.src;
     });
-    probe.src = t.src;
+    probeIO.observe(t.btn);
   });
+
+  // search box appears automatically once the playlist is long
+  if (tracks.length > 6) {
+    const box = document.createElement("input");
+    box.type = "search"; box.className = "queue-search"; box.placeholder = "Search songs…";
+    box.setAttribute("aria-label", "Search songs");
+    $("#playlist").before(box);
+    box.addEventListener("input", () => {
+      const q = box.value.trim().toLowerCase();
+      tracks.forEach(t => { t.btn.parentElement.hidden = !!q && !`${t.title} ${t.artist}`.toLowerCase().includes(q); });
+    });
+  }
 
   function load(i, autoplay = false, record = true) {
     if (record && started && i !== index) history.push(index);
